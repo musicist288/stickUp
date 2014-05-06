@@ -88,12 +88,12 @@
         return this;
     };
 
-    function bottomView(i, varscroll)
+    function bottomView(i, docScrollTop)
     {
         var contentView = $('#' + content[i] + '').height() * 0.9,
             testView = contentTop[i] + contentView;
 
-        if (varscroll <= testView)
+        if (docScrollTop <= testView)
         {
             $menuItems.removeClass(itemHover);
             $menuItems.eq(i).addClass(itemHover);
@@ -102,8 +102,7 @@
 
     $window.on('scroll', function ()
     {
-        var varscroll = $document.scrollTop(),
-            scrollTop, i;
+        var docScrollTop = $document.scrollTop(), i;
 
         if (menuSize !== null)
         {
@@ -111,7 +110,7 @@
                 for (i = 0; i < menuSize; i++)
                 {
                     contentTop[i] = $('#' + content[i] + '').offset().top;
-                    if (varscroll > contentTop[i] - 50 && varscroll < contentTop[i] + 50)
+                    if (docScrollTop > contentTop[i] - 50 && docScrollTop < contentTop[i] + 50)
                     {
                         $menuItems.removeClass(itemHover);
                         $menuItems.eq(i).addClass(itemHover);
@@ -123,12 +122,12 @@
                 for (i = menuSize-1; i > -1; i--)
                 {
                     contentTop[i] = $('#' + content[i] + '').offset().top;
-                    bottomView(i, varscroll);
+                    bottomView(i, docScrollTop);
                 }
             }
         }
 
-        if (varscroll + topMargin > vartop)
+        if (docScrollTop + topMargin > vartop)
         {
             $menu.addClass(fixedClass);
             $menu.next().closest('div').css({
@@ -138,19 +137,17 @@
 
             $(fixedClassSelector).css({top: 0}, 10);
         }
-        else if (varscroll + topMargin < vartop)
+        else if (docScrollTop + topMargin < vartop)
         {
             $menu.removeClass(fixedClass);
             $menu.next().closest('div').css({
                 'margin-top': currentMarginT.toString() + 'px'
             }, 10);
-
             $menu.css("position", "relative");
         }
 
-        scrollTop = $(this).scrollTop();
-        scrollDir = scrollTop > lastScrollTop ? 'down' : 'up';
-        lastScrollTop = scrollTop;
+        scrollDir = docScrollTop > lastScrollTop ? 'down' : 'up';
+        lastScrollTop = docScrollTop;
     });
 
 })(jQuery);
