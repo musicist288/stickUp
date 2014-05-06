@@ -90,7 +90,7 @@
 
     function bottomView(i, docScrollTop)
     {
-        var contentView = $('#' + content[i] + '').height() * 0.9,
+        var contentView = $('#' + content[i] + '').height() * 0.8,
             testView = contentTop[i] + contentView;
 
         if (docScrollTop <= testView)
