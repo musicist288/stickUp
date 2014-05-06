@@ -1,123 +1,153 @@
-(function ($) {
-
-    var contentButton = [],
-        contentTop = [],
+(function ($)
+{
+    var contentTop = [],
         content = [],
         lastScrollTop = 0,
         scrollDir = '',
         itemClass = '',
         itemHover = '',
+
         menuSize = null,
         stickyHeight = 0,
         stickyMarginB = 0,
         currentMarginT = 0,
-        topMargin = 0;
+        topMargin = 0,
+        vartop = null,
 
-    $(window).scroll(function (event) {
-        var st = $(this).scrollTop();
-        if (st > lastScrollTop) {
-            scrollDir = 'down';
-        } else {
-            scrollDir = 'up';
-        }
-        lastScrollTop = st;
-    });
+        menuClass = "stuckMenu",
+        menuClassSelector = "." + menuClass,
 
-    $.fn.stickUp = function (options) {
+        fixedClass = "isStuck",
+        fixedClassSelector = "." + fixedClass,
+        $window = $(window);
+
+    $.fn.stickUp = function (options)
+    {
         // adding a class to users div
-        $(this).addClass('stuckMenu');
+        $(this).addClass(menuClass);
+
         //getting options
-        var objn = 0;
-        if (options != null) {
-            for (var o in options.parts) {
-                if (options.parts.hasOwnProperty(o)) {
+        var objn = 0, part;
+        if (options !== null)
+        {
+            for (part in options.parts)
+            {
+                if (options.parts.hasOwnProperty(part))
+                {
                     content[objn] = options.parts[objn];
                     objn++;
                 }
             }
-            if (objn == 0) {
-                console.log('error:needs arguments');
+
+            if (objn === 0)
+            {
+                console.error('A parts object is required.');
             }
 
             itemClass = options.itemClass;
             itemHover = options.itemHover;
-            if (options.topMargin != null) {
-                if (options.topMargin == 'auto') {
-                    topMargin = parseInt($('.stuckMenu').css('margin-top'));
-                } else {
-                    if (isNaN(options.topMargin) && options.topMargin.search("px") > 0) {
-                        topMargin = parseInt(options.topMargin.replace("px", ""));
-                    } else if (!isNaN(parseInt(options.topMargin))) {
-                        topMargin = parseInt(options.topMargin);
-                    } else {
-                        console.log("incorrect argument, ignored.");
+            if (options.topMargin)
+            {
+                if (options.topMargin === 'auto')
+                {
+                    topMargin = parseInt($(menuClassSelector).css('margin-top'), 10);
+                }
+                else
+                {
+                    topMargin = parseInt(options.topMargin, 10);
+
+                    if (isNaN(topMargin) && options.topMargin.indexOf("px") > 0)
+                    {
+                        topMargin = parseInt(options.topMargin.replace("px", ""), 10);
+                    }
+
+                    if (isNaN(topMargin))
+                    {
+                        console.warn("Ignored topMargin option. Value must be number or 'auto'");
                         topMargin = 0;
                     }
                 }
-            } else {
-                topMargin = 0;
             }
+
             menuSize = $('.' + itemClass).size();
         }
-        stickyHeight = parseInt($(this).height());
-        stickyMarginB = parseInt($(this).css('margin-bottom'));
-        currentMarginT = parseInt($(this).next().closest('div').css('margin-top'));
-        vartop = parseInt($(this).offset().top);
-        //$(this).find('*').removeClass(itemHover);
+
+        stickyHeight    = parseInt($(this).height(), 10);
+        stickyMarginB   = parseInt($(this).css('margin-bottom'), 10);
+        currentMarginT  = parseInt($(this).next().closest('div').css('margin-top'), 10);
+        vartop          = parseInt($(this).offset().top, 10);
 
         return this;
+    };
+
+    function bottomView(items, i, varscroll)
+    {
+        var contentView = $('#' + content[i] + '').height() * 0.4,
+            testView = contentTop[i] - contentView;
+
+        if (varscroll > testView)
+        {
+            items.removeClass(itemHover);
+            items.eq(i).addClass(itemHover);
+        }
+        else if (varscroll < 50)
+        {
+            items.removeClass(itemHover);
+            items.eq(0).addClass(itemHover);
+        }
     }
-    $(document).on('scroll', function () {
-        varscroll = parseInt($(document).scrollTop());
-        if (menuSize != null) {
-            for (var i = 0; i < menuSize; i++) {
+
+    $window.on('scroll', function ()
+    {
+        var varscroll = parseInt($(document).scrollTop(), 10),
+            $menu = $(menuClassSelector),
+            scrollTop, i, items;
+
+        if (menuSize !== null)
+        {
+            items = $("." + itemClass);
+            for (i = 0; i < menuSize; i++)
+            {
                 contentTop[i] = $('#' + content[i] + '').offset().top;
 
-                function bottomView(i) {
-                    contentView = $('#' + content[i] + '').height() * .4;
-                    testView = contentTop[i] - contentView;
-                    //console.log(varscroll);
-                    if (varscroll > testView) {
-                        $('.' + itemClass).removeClass(itemHover);
-                        $('.' + itemClass + ':eq(' + i + ')').addClass(itemHover);
-                    } else if (varscroll < 50) {
-                        $('.' + itemClass).removeClass(itemHover);
-                        $('.' + itemClass + ':eq(0)').addClass(itemHover);
-                    }
+                if (scrollDir === 'down' &&
+                    varscroll > contentTop[i] - 50 &&
+                    varscroll < contentTop[i] + 50)
+                {
+                    items.removeClass(itemHover);
+                    items.eq(i).addClass(itemHover);
                 }
-                if (scrollDir == 'down' && varscroll > contentTop[i] - 50 && varscroll < contentTop[i] + 50) {
-                    $('.' + itemClass).removeClass(itemHover);
-                    $('.' + itemClass + ':eq(' + i + ')').addClass(itemHover);
-                }
-                if (scrollDir == 'up') {
-                    bottomView(i);
+
+                if (scrollDir === 'up')
+                {
+                    bottomView(items, i, varscroll);
                 }
             }
         }
 
-
-
-        if (vartop < varscroll + topMargin) {
-            $('.stuckMenu').addClass('isStuck');
-            $('.stuckMenu').next().closest('div').css({
-                'margin-top': stickyHeight + stickyMarginB + currentMarginT + 'px'
+        if (vartop < varscroll + topMargin)
+        {
+            $menu.addClass(fixedClass);
+            $menu.next().closest('div').css({
+                'margin-top': (stickyHeight + stickyMarginB + currentMarginT).toString() + 'px'
             }, 10);
-            $('.stuckMenu').css("position", "fixed");
-            $('.isStuck').css({
-                top: '0px'
-            }, 10, function () {
 
-            });
-        };
+            $menu.css("position", "fixed");
+            $(fixedClassSelector).css({top: 0}, 10);
+        }
 
-        if (varscroll + topMargin < vartop) {
-            $('.stuckMenu').removeClass('isStuck');
-            $('.stuckMenu').next().closest('div').css({
-                'margin-top': currentMarginT + 'px'
+        if (varscroll + topMargin < vartop)
+        {
+            $menu.removeClass(fixedClass);
+            $menu.next().closest('div').css({
+                'margin-top': currentMarginT.toString() + 'px'
             }, 10);
-            $('.stuckMenu').css("position", "relative");
-        };
+            $menu.css("position", "relative");
+        }
 
+        scrollTop = $(this).scrollTop();
+        scrollDir = scrollTop > lastScrollTop ? 'down' : 'up';
+        lastScrollTop = scrollTop;
     });
 
 })(jQuery);
