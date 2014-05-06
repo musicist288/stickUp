@@ -90,42 +90,39 @@
 
     function bottomView(i, varscroll)
     {
-        var contentView = $('#' + content[i] + '').height() * 0.4,
-            testView = contentTop[i] - contentView;
+        var contentView = $('#' + content[i] + '').height() * 0.9,
+            testView = contentTop[i] + contentView;
 
-        if (varscroll > testView)
+        if (varscroll <= testView)
         {
             $menuItems.removeClass(itemHover);
             $menuItems.eq(i).addClass(itemHover);
-        }
-        else if (varscroll < 50)
-        {
-            $menuItems.removeClass(itemHover);
-            $menuItems.eq(0).addClass(itemHover);
         }
     }
 
     $window.on('scroll', function ()
     {
-        var varscroll = parseInt($document.scrollTop(), 10),
+        var varscroll = $document.scrollTop(),
             scrollTop, i;
 
         if (menuSize !== null)
         {
-            for (i = 0; i < menuSize; i++)
-            {
-                contentTop[i] = $('#' + content[i] + '').offset().top;
-
-                if (scrollDir === 'down' &&
-                    varscroll > contentTop[i] - 50 &&
-                    varscroll < contentTop[i] + 50)
+            if (scrollDir === 'down') {
+                for (i = 0; i < menuSize; i++)
                 {
-                    $menuItems.removeClass(itemHover);
-                    $menuItems.eq(i).addClass(itemHover);
+                    contentTop[i] = $('#' + content[i] + '').offset().top;
+                    if (varscroll > contentTop[i] - 50 && varscroll < contentTop[i] + 50)
+                    {
+                        $menuItems.removeClass(itemHover);
+                        $menuItems.eq(i).addClass(itemHover);
+                    }
                 }
-
-                if (scrollDir === 'up')
+            }
+            else if (scrollDir === 'up')
+            {
+                for (i = menuSize-1; i > -1; i--)
                 {
+                    contentTop[i] = $('#' + content[i] + '').offset().top;
                     bottomView(i, varscroll);
                 }
             }
