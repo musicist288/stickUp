@@ -45,7 +45,7 @@
 
             if (objn === 0)
             {
-                console.error('A parts object is required.');
+                console.error('Must provide parts to sync menu items with.');
             }
 
             itemClass = options.itemClass;
@@ -131,23 +131,23 @@
             }
         }
 
-        if (vartop < varscroll + topMargin)
+        if (varscroll + topMargin > vartop)
         {
             $menu.addClass(fixedClass);
             $menu.next().closest('div').css({
                 'margin-top': (stickyHeight + stickyMarginB + currentMarginT).toString() + 'px'
             }, 10);
-
             $menu.css("position", "fixed");
+
             $(fixedClassSelector).css({top: 0}, 10);
         }
-
-        if (varscroll + topMargin < vartop)
+        else if (varscroll + topMargin < vartop)
         {
             $menu.removeClass(fixedClass);
             $menu.next().closest('div').css({
                 'margin-top': currentMarginT.toString() + 'px'
             }, 10);
+
             $menu.css("position", "relative");
         }
 
