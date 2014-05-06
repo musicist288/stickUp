@@ -16,10 +16,14 @@
 
         menuClass = "stuckMenu",
         menuClassSelector = "." + menuClass,
+        $menu = null,
+        $menuItems = null,
 
         fixedClass = "isStuck",
         fixedClassSelector = "." + fixedClass,
-        $window = $(window);
+
+        $window = $(window),
+        $document = $(document);
 
     $.fn.stickUp = function (options)
     {
@@ -46,6 +50,7 @@
 
             itemClass = options.itemClass;
             itemHover = options.itemHover;
+
             if (options.topMargin)
             {
                 if (options.topMargin === 'auto')
@@ -69,6 +74,9 @@
                 }
             }
 
+            $menu = $(menuClassSelector);
+            $menuItems = $("." + itemClass);
+
             menuSize = $('.' + itemClass).size();
         }
 
@@ -80,32 +88,30 @@
         return this;
     };
 
-    function bottomView(items, i, varscroll)
+    function bottomView(i, varscroll)
     {
         var contentView = $('#' + content[i] + '').height() * 0.4,
             testView = contentTop[i] - contentView;
 
         if (varscroll > testView)
         {
-            items.removeClass(itemHover);
-            items.eq(i).addClass(itemHover);
+            $menuItems.removeClass(itemHover);
+            $menuItems.eq(i).addClass(itemHover);
         }
         else if (varscroll < 50)
         {
-            items.removeClass(itemHover);
-            items.eq(0).addClass(itemHover);
+            $menuItems.removeClass(itemHover);
+            $menuItems.eq(0).addClass(itemHover);
         }
     }
 
     $window.on('scroll', function ()
     {
-        var varscroll = parseInt($(document).scrollTop(), 10),
-            $menu = $(menuClassSelector),
-            scrollTop, i, items;
+        var varscroll = parseInt($document.scrollTop(), 10),
+            scrollTop, i;
 
         if (menuSize !== null)
         {
-            items = $("." + itemClass);
             for (i = 0; i < menuSize; i++)
             {
                 contentTop[i] = $('#' + content[i] + '').offset().top;
@@ -114,13 +120,13 @@
                     varscroll > contentTop[i] - 50 &&
                     varscroll < contentTop[i] + 50)
                 {
-                    items.removeClass(itemHover);
-                    items.eq(i).addClass(itemHover);
+                    $menuItems.removeClass(itemHover);
+                    $menuItems.eq(i).addClass(itemHover);
                 }
 
                 if (scrollDir === 'up')
                 {
-                    bottomView(items, i, varscroll);
+                    bottomView(i, varscroll);
                 }
             }
         }
