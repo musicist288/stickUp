@@ -1,0 +1,10 @@
+{
+    "eqeqeq": true,
+    "browser": true,
+    "devel": true,
+    "camelcase": true,
+    "unused": true,
+    "undef": true,
+    "trailing": true,
+    "jquery": true
+}
