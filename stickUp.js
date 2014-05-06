@@ -3,7 +3,7 @@
     var contentTop = [],
         content = [],
         lastScrollTop = 0,
-        scrollDir = '',
+        scrollDir = 'down',
         itemClass = '',
         itemHover = '',
 
@@ -85,6 +85,7 @@
         currentMarginT  = parseInt($(this).next().closest('div').css('margin-top'), 10);
         vartop          = parseInt($(this).offset().top, 10);
 
+        updateStickyNav();
         return this;
     };
 
@@ -100,7 +101,7 @@
         }
     }
 
-    $window.on('scroll', function ()
+    function updateStickyNav()
     {
         var docScrollTop = $document.scrollTop(), i;
 
@@ -137,7 +138,7 @@
 
             $(fixedClassSelector).css({top: 0}, 10);
         }
-        else if (docScrollTop + topMargin < vartop)
+        else
         {
             $menu.removeClass(fixedClass);
             $menu.next().closest('div').css({
@@ -148,6 +149,8 @@
 
         scrollDir = docScrollTop > lastScrollTop ? 'down' : 'up';
         lastScrollTop = docScrollTop;
-    });
+    }
+
+    $window.on('scroll', updateStickyNav);
 
 })(jQuery);
