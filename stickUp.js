@@ -133,18 +133,17 @@
             $menu.addClass(fixedClass);
             $menu.next().closest('div').css({
                 'margin-top': (stickyHeight + stickyMarginB + currentMarginT).toString() + 'px'
-            }, 10);
+            });
             $menu.css("position", "fixed");
-
-            $(fixedClassSelector).css({top: 0}, 10);
+            $(fixedClassSelector).css({top: 0});
         }
         else
         {
             $menu.removeClass(fixedClass);
             $menu.next().closest('div').css({
                 'margin-top': currentMarginT.toString() + 'px'
-            }, 10);
-            $menu.css("position", "relative");
+            });
+            $menu.css({"position": "relative", top: 0});
         }
 
         scrollDir = docScrollTop > lastScrollTop ? 'down' : 'up';
