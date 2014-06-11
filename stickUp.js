@@ -23,7 +23,8 @@
         fixedClassSelector = "." + fixedClass,
 
         $window = $(window),
-        $document = $(document);
+        $document = $(document),
+        scrolling = false;
 
     $.fn.stickUp = function (options)
     {
@@ -148,8 +149,24 @@
 
         scrollDir = docScrollTop > lastScrollTop ? 'down' : 'up';
         lastScrollTop = docScrollTop;
+
     }
 
-    $window.on('scroll', updateStickyNav);
+    $window.on('scroll', function () {
+        updateStickyNav();
+        scrolling = false; // For mobile devices
+    });
+
+    function iosUpdate() {
+        updateStickyNav();
+        if (scrolling) {
+            window.requestAnimationFrame(iosUpdate);
+        }
+    }
+
+    $window.on("touchmove", function () {
+        scrolling = true;
+        iosUpdate();
+    });
 
 })(jQuery);
