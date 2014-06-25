@@ -157,6 +157,9 @@
         scrolling = false; // For mobile devices
     });
 
+    $window.on('resize', updateStickyNav);
+    $window.on('orientationchange', updateStickyNav);
+
     function iosUpdate() {
         updateStickyNav();
         if (scrolling) {
