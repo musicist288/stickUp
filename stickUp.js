@@ -112,7 +112,7 @@
                 for (i = 0; i < menuSize; i++)
                 {
                     contentTop[i] = $('#' + content[i] + '').offset().top;
-                    if (docScrollTop > contentTop[i] - 50 && docScrollTop < contentTop[i] + 50)
+                    if (docScrollTop > contentTop[i] - 50)
                     {
                         $menuItems.removeClass(itemHover);
                         $menuItems.eq(i).addClass(itemHover);
