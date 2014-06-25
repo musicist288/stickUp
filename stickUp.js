@@ -105,14 +105,13 @@
     function updateStickyNav()
     {
         var docScrollTop = $document.scrollTop(), i;
-
         if (menuSize !== null)
         {
             if (scrollDir === 'down') {
                 for (i = 0; i < menuSize; i++)
                 {
                     contentTop[i] = $('#' + content[i] + '').offset().top;
-                    if (docScrollTop > contentTop[i] - 50)
+                    if ((contentTop[i] - $menu.offset().top) < 100)
                     {
                         $menuItems.removeClass(itemHover);
                         $menuItems.eq(i).addClass(itemHover);
